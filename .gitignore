@@ -2,5 +2,5 @@
 .idea
 .virtual_documents
 runs
-yolo5
+yolov5
 yolov5s.pt
