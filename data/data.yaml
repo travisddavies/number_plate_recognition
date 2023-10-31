@@ -1,0 +1,7 @@
+train: train
+
+val: validation
+
+nc: 3
+
+names = ['number_plate']
