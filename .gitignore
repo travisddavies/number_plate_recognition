@@ -4,3 +4,6 @@
 runs
 yolov5
 yolov5s.pt
+yolov8m.pt
+yolov8n.pt
+yolov8s.pt
