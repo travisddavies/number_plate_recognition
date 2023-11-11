@@ -1,0 +1,48 @@
+---
+- name: Create config mount directory
+  file: 
+    path: "{{ bind_mount_path.src }}"
+    recurse: yes
+    state: directory
+
+- name: Create volume mount directory
+  file: 
+    path: "{{ volume_path.src }}"
+    recurse: yes
+    state: directory
+
+- name: Copy docker.ini to remote
+  copy:
+    src: config_files/docker.ini
+    dest: "{{ bind_mount_path.src }}/docker.ini"
+
+- name: Start CouchDB image
+  docker_container:
+    image: couchdb:latest
+    name: "couchdb"
+    volumes: 
+      - "{{ bind_mount_path.src }}:{{ bind_mount_path.dst }}"
+      - "{{ volume_path.src }}:{{ volume_path.dst }}"
+    ports: 
+      - "{{ couchdb_port }}:{{ couchdb_port }}"
+      - "{{ cluster_comm_port_range_min }}:{{ cluster_comm_port_range_min }}"
+      - "{{ cluster_port }}:{{ cluster_port }}" 
+    env:
+      ERL_FLAGS: '-setcookie "a192aeb9904e6590849337933b000c99" -name "couchdb@{{ inventory_hostname }}'
+    state: started
+
+- name: Pause start up for 10s.
+  pause: 
+    seconds: 10
+
+- name: Set up default databases
+  uri:
+    url: "http://{{ inventory_hostname }}:{{ couchdb_port }}/{{ item }}"
+    user: "{{ user.username }}"
+    password: "{{ user.password }}"
+    force_basic_auth: yes 
+    method: PUT 
+    status_code: 
+      - 201
+      - 412
+  with_items: "{{ default_databases }}"

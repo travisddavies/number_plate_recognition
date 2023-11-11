@@ -1,0 +1,15 @@
+rpm_key_url: https://download.docker.com/linux/ubuntu/gpg
+rpm_key_file: /etc/apt/keyrings/docker.gpg
+repo: deb https://download.docker.com/linux/ubuntu bionic stable
+remove_module:
+  - name: docker
+  - name: docker-engine
+  - name: docker.io
+  - name: containerd
+  - name: runc
+install_module:
+  - name: docker-ce
+  - name: docker-ce-cli
+  - name: containerd.io
+  - name: docker-buildx-plugin
+  - name: docker-compose-plugin

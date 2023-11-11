@@ -1,0 +1,31 @@
+---
+- name: Remove old docker
+  apt:
+    name: 
+      - "{{ item.name }}"
+    state: absent
+    update_cache: yes
+  loop: "{{ remove_module }}" 
+- name: Add Docker’s official GPG key
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+- name: get gpg key
+  apt_key: 
+    url: "{{ rpm_key_url }}"
+    state: present
+
+- name: Set up docker repository
+  apt_repository:
+    repo: "{{ repo }}"
+    state: present
+  
+- name: Install docker
+  apt:
+    name: "{{ item.name }}"
+    state: latest
+    update_cache: yes
+  loop: "{{ install_module }}"

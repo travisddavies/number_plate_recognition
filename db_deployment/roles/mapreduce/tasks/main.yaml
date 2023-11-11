@@ -1,0 +1,20 @@
+---
+- name: Install Node.js
+  become: true
+  apt:
+    name: nodejs
+    state: present
+
+- name: Create json files
+  command: node "{{ item.filename }}"
+  args: 
+    chdir: /home/{{ansible_user}}/data/data//mapReduce
+  loop: "{{ design_docs }}"
+
+- name: Run MapReduce on couchdb
+  command: >
+    curl -X PUT "http://{{ user.username }}:{{ user.password }}@{{ groups.config[0] }}:{{ couchdb_port }}/{{ item.db_name }}/_design/{{ item.name }}"
+    -H "Content-Type: application/json" --data-binary "@{{ item.json }}"
+  args: 
+    chdir: /home/{{ansible_user}}/data/data/mapReduce
+  loop: "{{ design_docs }}"

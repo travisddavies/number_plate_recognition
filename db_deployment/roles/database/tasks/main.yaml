@@ -1,0 +1,12 @@
+---
+- name: Create twitter database
+  uri:
+    user: "{{ user.username }}"
+    password: "{{ user.password }}"
+    url: "http://{{ groups.main[0] }}:{{ couchdb_port }}/{{ item }}?q=8&n=3"
+    method: PUT
+    status_code:
+      - 201
+      - 412
+    force_basic_auth: yes
+  with_items: "{{ database }}"

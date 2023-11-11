@@ -1,0 +1,36 @@
+bind_mount_path:
+  src: /home/{{ ansible_user }}/data/couchdb/etc
+  dst: /opt/couchdb/etc/local.d
+
+volume_path:
+  src: /home/{{ ansible_user }}/data/couchdb/data
+  dst: /opt/couchdb/data
+
+couchdb_port: 5984
+cluster_port: 4369
+cluster_comm_port_range_min: 9100
+cluster_comm_port_range_max: 9200
+remote_ip_prefix: 0.0.0.0/0
+
+user:
+  username: admin
+  password: password
+default_databases:
+  - _users
+  - _replicator
+  - _global_changes
+
+json:
+  - body: "{\"action\": \"enable_cluster\", \"bind_address\":\"{{ remote_ip_prefix }}\",\
+          \"username\": \"{{ user.username }}\", \"password\":\"{{ user.password }}\", \"port\": \"{{ couchdb_port }}\",\
+          \"remote_node\": \"{{ inventory_hostname }}\", \"node_count\": \"{{ groups['db'] | length }}\",\
+          \"remote_current_user\":\"{{ user.username }}\", \"remote_current_password\":\"{{ user.password }}\"}"
+  - body: "{\"action\": \"add_node\", \"host\":\"{{ inventory_hostname }}\",\
+          \"port\": \"{{ couchdb_port }}\", \"username\": \"{{ user.username }}\", \"password\":\"{{ user.password }}\"}"
+
+database:
+  - number_plates
+
+design_docs:
+  - name: number_plates
+    db_name: number_plates

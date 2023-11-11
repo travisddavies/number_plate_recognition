@@ -1,0 +1,27 @@
+---
+- name: Set up modules for all instances
+  hosts: main
+  vars_files:
+    - variables/docker.yaml
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: chrony
+    - role: docker
+
+- name: Set up couchdb
+  become: yes
+  hosts: main
+  vars_files:
+    - variables/couchdb.yaml
+  roles:
+    - couchdb
+
+- name: Set up databases
+  hosts: main
+  become: yes
+  vars_files:
+    - variables/couchdb.yaml
+    - variables/mrc.yaml
+  roles:
+    - database

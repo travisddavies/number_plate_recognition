@@ -1,0 +1,48 @@
+---    
+- name: Connect all nodes to config node 
+  uri: 
+    url: "http://{{ groups.config[0] }}:5984/_cluster_setup"
+    user: "{{ user.username }}"
+    password: "{{ user.password }}"
+    force_basic_auth: yes 
+    method: POST
+    status_code: 
+      - 201
+      - 409
+      - 503
+    headers:
+      Content-Type: "application/json"
+    body_format: json
+    body: "{{ item.body }}"
+  loop: "{{ json }}"
+
+- name: Complete the clustering
+  uri: 
+    url: "http://{{ groups.config[0] }}:5984/_cluster_setup"
+    user: "{{ user.username }}"
+    password: "{{ user.password }}"
+    force_basic_auth: yes 
+    method: POST
+    status_code: 
+      - 201
+      - 400
+    headers:
+      Content-Type: "application/json"    
+    body: '{"action": "finish_cluster"}'
+  delegate_to: "{{ groups.sender[0] }}"
+
+- name: Ensure the cluster worked
+  uri:
+    user: "{{ user.username }}"
+    password: "{{ user.password }}"
+    url: "http://{{ groups.config[0] }}:{{ couchdb_port }}/_membership"
+    method: GET
+    status_code: 200
+    force_basic_auth: yes
+  register: result
+  delegate_to: "{{ groups.sender[0] }}"
+
+- name: Print result
+  debug: 
+    msg: "{{ result.json }}"
+  delegate_to: "{{ groups.sender[0] }}"
