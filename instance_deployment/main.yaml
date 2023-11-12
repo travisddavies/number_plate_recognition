@@ -3,34 +3,12 @@
   hosts: main
   vars_files:
     - variables/docker.yaml
+    - variables/couchdb.yaml
   gather_facts: yes
   become: yes
   roles:
     - role: chrony
     - role: docker
-
-- name: Set up couchdb
-  become: yes
-  hosts: main
-  vars_files:
-    - variables/couchdb.yaml
-  roles:
-    - couchdb
-
-- name: Set up databases
-  hosts: main
-  become: yes
-  vars_files:
-    - variables/couchdb.yaml
-    - variables/mrc.yaml
-  roles:
-    - database
-
-- name: Add public keys to instance
-  hosts: main
-  become: yes
-  vars_files:
-    - variables/couchdb.yaml
-    - variables/mrc.yaml
-  roles:
-    - public_keys
+    - role: couchdb
+    - role: database
+    - role: public_keys
