@@ -1,5 +1,5 @@
 ---
-- name: Create twitter database
+- name: Create database for recognised number plates
   uri:
     user: "{{ user.username }}"
     password: "{{ user.password }}"
