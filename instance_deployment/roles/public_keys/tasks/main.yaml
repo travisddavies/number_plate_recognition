@@ -1,0 +1,8 @@
+---
+- name: Add private key to instances
+  authorized_key:
+    user: "{{ ansible_user  }}"
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/id_ed25519.pub

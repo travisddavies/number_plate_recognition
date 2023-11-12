@@ -25,3 +25,12 @@
     - variables/mrc.yaml
   roles:
     - database
+
+- name: Add public keys to instance
+  hosts: main
+  become: yes
+  vars_files:
+    - variables/couchdb.yaml
+    - variables/mrc.yaml
+  roles:
+    - public_keys
