@@ -16,11 +16,15 @@ class NumberPlateRecogniser:
     def __init__(self, size='n'):
         assert size in {'n', 's'}, 'size of NumberPlateRecogniser must be \
                 s or n'
-
         # Number plate detection model.
-        self._detector = YOLO(f'best_weights/yolov8{size}')
+        self._detector = YOLO(f'best_weights/yolov8{size}/best.pt')
         # OCR model for number plate text extraction.
         self._recogniser = easyocr.Reader(['en'])
+
+        # The allowable chars that should be on a number plate
+        numbers = [str(i) for i in range(10)]
+        chars = [chr(i) for i in range(65, 91)]
+        self.allowable_chars = numbers + chars
 
     # Detects the number plate in an image.
     def detect(self, image):
@@ -56,7 +60,7 @@ class NumberPlateRecogniser:
         extracted_bboxes = []
 
         for prediction in predictions:
-            boxes = prediction.boxes()
+            boxes = prediction.boxes
             for box in boxes:
                 xyxy = box.xyxy.squeeze()
                 x1, y1, x2, y2 = int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), \
@@ -78,7 +82,7 @@ class NumberPlateRecogniser:
         for bbox in bboxes:
             x1, y1, x2, y2 = bbox
             cropped_img = image[y1:y2, x1:x2]
-            extracted_txt = self.recognise(cropped_img, x2 - x1)
+            extracted_txt = self.recognise(cropped_img)
             label = ''.join(extracted_txt).strip()
             extracted_txts.append(label)
 
