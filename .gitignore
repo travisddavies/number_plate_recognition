@@ -11,3 +11,6 @@ my_photo.jpeg
 Screenshot_20231103_235648.png
 en_sample
 None-VGG-BiLSTM-CTC (will be deprecated).pth
+engine/EasyOCR/
+engine/PaddleOCR/
+engine/__pycache__/
