@@ -2,6 +2,10 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 from paddleocr import PaddleOCR
+import logging
+
+logger = logging.getLogger('paddle')
+logger.setLevel(logging.WARN)
 
 
 class NumberPlateRecogniser:
