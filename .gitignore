@@ -14,3 +14,4 @@ None-VGG-BiLSTM-CTC (will be deprecated).pth
 engine/EasyOCR/
 engine/PaddleOCR/
 engine/__pycache__/
+number_plate_recognition.ipynb
