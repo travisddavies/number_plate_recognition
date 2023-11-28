@@ -126,7 +126,7 @@ class NumberPlateRecogniser:
         """
         is_confident_count = 0
         for result in ordered_results:
-            if result[1][1] < 0.9:
+            if result[1][1] < 0.75:
                 is_confident_count += 1
         return is_confident_count == 0
 
