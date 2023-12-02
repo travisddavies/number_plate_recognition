@@ -1,7 +1,7 @@
 from engine.recognition import NumberPlateRecogniser
 import cv2
 from argparse import ArgumentParser
-
+from engine import couchdb_client
 
 def main():
     """
@@ -80,8 +80,13 @@ def process_video(input_filepath, output_filepath):
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(output_filepath, fourcc, fps, (width, height))
 
+    # Number plates present on the screen
+    number_plates = set()
+    # data to be sent to db
+    data = []
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
+
         success, frame = camera.read()
         if success:
             # Get the bboxes of the number plates
@@ -94,6 +99,8 @@ def process_video(input_filepath, output_filepath):
             cv2.imshow('Number Plate Recognition', annotated_frame)
             # Save the frame to a video
             out.write(annotated_frame)
+            number_plates, data = couchdb_client.collect_data(
+                frame, labels, number_plates, data)
         else:
             break
 
@@ -105,6 +112,7 @@ def process_video(input_filepath, output_filepath):
     # Stop the camera and saving of the video
     out.release()
     camera.release()
+    couchdb_client.send_to_db(data)
 
 
 if __name__ == "__main__":
