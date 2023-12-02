@@ -22,9 +22,10 @@ class NumberPlateRecogniser:
         # Number plate detection model.
         self._detector = YOLO(f'./engine/best_weights/yolov8{size}/best.pt')
         # OCR model for number plate text extraction.
-        self._recogniser = PaddleOCR(use_angle_cls=True, lang='en',
+        self._recogniser = PaddleOCR(use_angle_cls=True,
                                      detect=True, rec=True,
-                                     rec_model_dir='./engine/best_weights/paddlepaddle',
+                                     rec_model_dir='./engine/best_weights/chinese_number_plates/Teacher',
+                                     rec_char_dict_path='./engine/chinese_number_plate.txt',
                                      show_log=False)
 
     # Detects the number plate in an image.
@@ -105,6 +106,7 @@ class NumberPlateRecogniser:
                 if '-' in label:
                     print('after:', label)
                 labels.append(label)
+                print(labels)
 
         return labels
 
@@ -126,7 +128,7 @@ class NumberPlateRecogniser:
         """
         is_confident_count = 0
         for result in ordered_results:
-            if result[1][1] < 0.75:
+            if result[1][1] < 0.9:
                 is_confident_count += 1
         return is_confident_count == 0
 
