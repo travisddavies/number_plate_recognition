@@ -98,24 +98,9 @@ class NumberPlateRecogniser:
                 if self._is_confident_prediction(ordered_results):
                     for label_subtext in ordered_results:
                         label += label_subtext[1][0]
-                if '-' in label:
-                    print(label)
-                label = label.replace('-', '')
-                label = label.replace('.', '')
-                label = label.replace(',', '')
-                if '-' in label:
-                    print('after:', label)
                 labels.append(label)
-                print(labels)
 
         return labels
-
-    def remove_symbols(label):
-        possible_symbols = ['.', ',', '%', '$', '&', '-', '_', '+', '*', '@',
-                            '~', '#', '`', '~']
-        for symbol in possible_symbols:
-            label = label.replace(symbol, '')
-        return label
 
     def _is_confident_prediction(self, ordered_results):
         """
