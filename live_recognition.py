@@ -1,9 +1,11 @@
 from engine.recognition import NumberPlateRecogniser
 import cv2
 from argparse import ArgumentParser
-from engine import couchdb_client
+import couchdb_client
+import asyncio
 
-def main():
+
+async def main():
     """
     Iterates through the frames of a local video or live camera footage.
 
@@ -31,7 +33,7 @@ def main():
         perform_live_mode()
     # Otherwise, go through a local video and save the output
     else:
-        process_video(args.input, args.output)
+        await process_video(args.input, args.output)
 
     # Kill the open window
     cv2.waitKey(1000)
@@ -66,7 +68,7 @@ def perform_live_mode():
     camera.release()
 
 
-def process_video(input_filepath, output_filepath):
+async def process_video(input_filepath, output_filepath):
     assert input_filepath, 'Must provide an input video path.'
     assert output_filepath, 'Must provide an output video path.'
     # Number plate recognition model
@@ -82,7 +84,7 @@ def process_video(input_filepath, output_filepath):
 
     # Number plates present on the screen
     number_plates = set()
-    # data to be sent to db
+    # Data to be sent to db
     data = []
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
@@ -112,8 +114,9 @@ def process_video(input_filepath, output_filepath):
     # Stop the camera and saving of the video
     out.release()
     camera.release()
-    couchdb_client.send_to_db(data)
+    task = asyncio.create_task(couchdb_client.send_to_db(data))
+    await task
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
