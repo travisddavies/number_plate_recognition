@@ -11,6 +11,7 @@ def collect_data(frame, labels, bboxes, total_data, times_on_screen):
         index = find_overlapping_bbox(label, bbox)
         if index >= 0:
             update_time_on_screen(label, times_on_screen)
+            update_last_seen(total_data, index)
             update_labels(label, total_data, index, times_on_screen)
         else:
             data = {'numberplate': label,
@@ -21,8 +22,13 @@ def collect_data(frame, labels, bboxes, total_data, times_on_screen):
             index = len(total_data) - 1
 
         update_bbox(total_data, index, bbox)
+        clean_up_times(times_on_screen)
 
     return total_data, times_on_screen
+
+
+def update_last_seen(total_data, index):
+    total_data[index]['datetime'] = time.time()
 
 
 def find_overlapping_bbox(label, bbox, total_data):
@@ -57,7 +63,9 @@ def get_time_on_screen(label, times_on_screen):
 
 
 def update_time_on_screen(label, times_on_screen):
-    if label not in times_on_screen:
+    start_time = time.time()
+    if label not in times_on_screen or \
+            start_time - times_on_screen[label]['end_time'] > 30:
         times_on_screen[label]['start_time'] = time.time()
 
     times_on_screen[label]['end_time'] = time.time()
@@ -65,3 +73,9 @@ def update_time_on_screen(label, times_on_screen):
 
 def update_bbox(total_data, index, bbox):
     total_data[index]['bbox'] = bbox
+
+
+def clean_up_times(times_on_screen):
+    for label in times_on_screen:
+        if time.time() - times_on_screen[label]['end_time'] > 5 * 60:
+            del times_on_screen[label]
