@@ -1,8 +1,8 @@
 from engine.recognition import NumberPlateRecogniser
 import cv2
 from argparse import ArgumentParser
-import couchdb_client
 import asyncio
+from data_collection import NumberPlateCollector
 
 
 async def main():
@@ -73,6 +73,8 @@ async def process_video(input_filepath, output_filepath):
     assert output_filepath, 'Must provide an output video path.'
     # Number plate recognition model
     model = NumberPlateRecogniser(size='n')
+    # Data collector for number plates
+    collector = NumberPlateCollector()
     # Access the camera
     camera = cv2.VideoCapture(input_filepath)
     width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -101,8 +103,7 @@ async def process_video(input_filepath, output_filepath):
             cv2.imshow('Number Plate Recognition', annotated_frame)
             # Save the frame to a video
             out.write(annotated_frame)
-            number_plates, data = couchdb_client.collect_data(
-                frame, labels, number_plates, data)
+            collector.collect_data(frame, labels, bboxes)
         else:
             break
 
@@ -114,7 +115,7 @@ async def process_video(input_filepath, output_filepath):
     # Stop the camera and saving of the video
     out.release()
     camera.release()
-    task = asyncio.create_task(couchdb_client.send_to_db(data))
+    task = asyncio.create_task(collector.send_to_db())
     await task
 
 
