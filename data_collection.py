@@ -17,12 +17,11 @@ class NumberPlateCollector:
         self.total_data = []
 
     def collect_data(self, frame, labels, bboxes):
-        print(frame.shape)
         encoded_frame = base64.b64encode(frame)
         encoded_frame_string = encoded_frame.decode('utf-8')
 
         for label, bbox in zip(labels, bboxes):
-            print(label)
+            print(label, bbox)
             if not label:
                 continue
             index = self._find_overlapping_bbox(label, bbox)
@@ -66,11 +65,9 @@ class NumberPlateCollector:
 
         for i, data in enumerate(self.total_data):
             bbox_on_screen = data['bbox']
-            print(data['bbox'])
-            print(bbox)
             iou = self._get_iou(bbox, bbox_on_screen)
             print(iou)
-            if iou > largest_iou and iou > 0.3:
+            if iou > largest_iou and iou > 0.1:
                 largest_iou = iou
                 overlap_index = i
 
