@@ -60,7 +60,7 @@ class NumberPlateRecogniser:
                 xyxy = box.xyxy.squeeze()
                 x1, y1, x2, y2 = int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), \
                     int(xyxy[3])
-                extracted_bboxes.append((x1, y1, x2, y2))
+                extracted_bboxes.append([x1, y1, x2, y2])
 
         return extracted_bboxes
 
