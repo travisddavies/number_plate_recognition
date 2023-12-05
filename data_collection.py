@@ -21,17 +21,14 @@ class NumberPlateCollector:
         encoded_frame_string = encoded_frame.decode('utf-8')
 
         for label, bbox in zip(labels, bboxes):
-            print(label, bbox)
             if not label:
                 continue
             index = self._find_overlapping_bbox(label, bbox)
             self._update_time_on_screen(label)
             if index >= 0:
-                print(f'updating {self.total_data[index]["numberplate"]} with {label}')
                 self._update_labels(label, index)
                 self._update_last_seen(index)
             else:
-                print('Creating new data')
                 data = {'numberplate': label,
                         'datetime': time.time(),
                         'screenshot': encoded_frame_string,
@@ -39,19 +36,21 @@ class NumberPlateCollector:
                 self.total_data.append(data)
                 index = len(self.total_data) - 1
 
-            print([data['numberplate'] for data in self.total_data])
             self._update_bbox(index, bbox)
             self._clean_up_times()
 
     async def send_to_db(self):
         async with aiohttp.ClientSession() as session:
+            for data in self.total_data:
+                del data['bbox']
             data = {'docs': self.total_data}
             async with session.post(self.url, json=data, headers=self.headers) as resp:
+                resp.status
                 if resp.status == 201:
-                    await print('Data successfully sent to couchdb')
+                    print('Data successfully sent to couchdb:', await resp.text())
                     self.total_data = []
                 else:
-                    await print(f'Error: {resp.status} - {resp.text}')
+                    print(f'Error: {resp.status} - {await resp.text()}')
 
     def __len__(self):
         return len(self.total_data)
@@ -66,7 +65,6 @@ class NumberPlateCollector:
         for i, data in enumerate(self.total_data):
             bbox_on_screen = data['bbox']
             iou = self._get_iou(bbox, bbox_on_screen)
-            print(iou)
             if iou > largest_iou and iou > 0.1:
                 largest_iou = iou
                 overlap_index = i
