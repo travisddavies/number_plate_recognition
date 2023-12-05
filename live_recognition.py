@@ -84,10 +84,6 @@ async def process_video(input_filepath, output_filepath):
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(output_filepath, fourcc, fps, (width, height))
 
-    # Number plates present on the screen
-    number_plates = set()
-    # Data to be sent to db
-    data = []
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
 
