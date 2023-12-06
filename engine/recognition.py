@@ -235,10 +235,12 @@ class NumberPlateRecogniser:
                                                 cv2.LINE_AA)
 
                 # The license plate number annotated on the image
-                annotated_image = cv2.putText(annotated_image,
-                                              label, (p1[0], p1[1] - 2 if outside else p1[1] + h + 2), 0, sf, txt_colour,
-                                              thickness=tf,
-                                              lineType=cv2.LINE_AA)
+#                annotated_image = cv2.putText(annotated_image,
+#                                              label, (p1[0], p1[1] - 2 if outside else p1[1] + h + 2), 0, sf, txt_colour,
+#                                              thickness=tf,
+#                                              lineType=cv2.LINE_AA)
+                text_position = (p1[0], p1[1] - 30 if outside else p1[1] + h + 30)
+                annotated_image = self._add_text(label, annotated_image, text_position, tf, txt_colour, outside)
 
         return annotated_image
 
@@ -257,8 +259,8 @@ class NumberPlateRecogniser:
         text_color_pil = tuple(reversed(txt_colour))
 
         # Load a font (you may need to adjust the font path)
-        font_path = "path/to/your/font.ttf"
-        font_size = 12
+        font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"
+        font_size = 30
         font = ImageFont.truetype(font_path, font_size)
 
         # Annotate the image with text
