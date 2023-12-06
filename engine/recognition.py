@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from paddleocr import PaddleOCR
 import logging
+from PIL import Image, ImageDraw, ImageFont
 
 logger = logging.getLogger('paddle')
 logger.setLevel(logging.WARN)
@@ -16,17 +17,26 @@ class NumberPlateRecogniser:
     For initialisation, choose either size='n' or size='s'.
     """
 
-    def __init__(self, size='n'):
-        assert size in {'n', 's'}, 'size of NumberPlateRecogniser must be \
-                s or n'
+    def __init__(self, country):
         # Number plate detection model.
-        self._detector = YOLO(f'./engine/best_weights/yolov8{size}/best.pt')
+        self._detector = YOLO('./engine/best_weights/yolov8n/best.pt')
         # OCR model for number plate text extraction.
-        self._recogniser = PaddleOCR(use_angle_cls=True,
-                                     detect=True, rec=True,
-                                     rec_model_dir='./engine/best_weights/chinese_number_plates/Teacher',
-                                     rec_char_dict_path='./engine/chinese_number_plate.txt',
-                                     show_log=False)
+        # If Australia was chosen, upload the australian weights,
+        # else upload chinese weights.
+        if country == 'au':
+            rec_model_dir = './engine/best_weights/aus_number_plates'
+            self._recogniser = PaddleOCR(use_angle_cls=True,
+                                         detect=True, rec=True,
+                                         rec_model_dir=rec_model_dir,
+                                         show_log=False)
+        else:
+            rec_model_dir = './engine/best_weights/chinese_number_plates/Teacher'
+            rec_char_dict_path = './engine/chinese_number_plate.txt'
+            self._recogniser = PaddleOCR(use_angle_cls=True,
+                                         detect=True, rec=True,
+                                         rec_model_dir=rec_model_dir,
+                                         rec_char_dict_path=rec_char_dict_path,
+                                         show_log=False)
 
     # Detects the number plate in an image.
     def detect(self, image):
@@ -231,3 +241,31 @@ class NumberPlateRecogniser:
                                               lineType=cv2.LINE_AA)
 
         return annotated_image
+
+    def _add_text(self, label, image, text_position, tf, txt_colour, outside):
+        # Assuming you have the variables label, p1, outside, h, sf,
+        # txt_colour, tf defined
+        # Convert the annotated_image from OpenCV format (BGR) to Pillow format
+        # (RGB)
+        annotated_image = Image.fromarray(
+            cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+
+        # Create a Pillow ImageDraw object
+        draw = ImageDraw.Draw(annotated_image)
+
+        # Convert the OpenCV text color format (BGR) to Pillow format (RGB)
+        text_color_pil = tuple(reversed(txt_colour))
+
+        # Load a font (you may need to adjust the font path)
+        font_path = "path/to/your/font.ttf"
+        font_size = 12
+        font = ImageFont.truetype(font_path, font_size)
+
+        # Annotate the image with text
+        draw.text(text_position, label, font=font, fill=text_color_pil)
+
+        # Convert the Pillow image back to OpenCV format (BGR)
+        annotated_image_cv2 = cv2.cvtColor(
+            np.array(annotated_image), cv2.COLOR_RGB2BGR)
+
+        return annotated_image_cv2
