@@ -235,12 +235,10 @@ class NumberPlateRecogniser:
                                                 cv2.LINE_AA)
 
                 # The license plate number annotated on the image
-#                annotated_image = cv2.putText(annotated_image,
-#                                              label, (p1[0], p1[1] - 2 if outside else p1[1] + h + 2), 0, sf, txt_colour,
-#                                              thickness=tf,
-#                                              lineType=cv2.LINE_AA)
                 text_position = (p1[0], p1[1] - 30 if outside else p1[1] + h + 30)
-                annotated_image = self._add_text(label, annotated_image, text_position, tf, txt_colour, outside)
+                annotated_image = self._add_text(
+                    label, annotated_image, text_position,
+                    tf, txt_colour, outside)
 
         return annotated_image
 
