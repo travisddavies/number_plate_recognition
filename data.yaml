@@ -1,6 +1,6 @@
-train: international_plates/train
+train: detection_datasets/international_plates/train
 
-val: international_plates/val
+val: detection_datasets/international_plates/val
 
 nc: 1
 
