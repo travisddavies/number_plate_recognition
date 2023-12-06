@@ -2,6 +2,7 @@ from engine.recognition import NumberPlateRecogniser
 import cv2
 import asyncio
 from data_collection import NumberPlateCollector
+from argparse import ArgumentParser
 
 
 async def main():
@@ -11,17 +12,24 @@ async def main():
     If a live camera feed is iterated through, an annotated video will be shown
     on the screen, but no video will be saved.
     """
+    # Arguments for the program
+    parser = ArgumentParser(description='Process an image file.')
+    parser.add_argument('-c', '--country', type=str,
+                              help='Country of number plates - either au or ch')
+
+    args = parser.parse_args()
     # If it's live mode, go through a live mode of number plate recognition
-    await perform_live_mode()
+    await perform_live_mode(args.country)
 
     # Kill the open window
     cv2.waitKey(1000)
     cv2.destroyAllWindows()
 
 
-async def perform_live_mode():
+async def perform_live_mode(country):
+    assert country in ['au', 'ch'], 'country must either be au or ch'
     # Number plate recognition model
-    model = NumberPlateRecogniser(size='n')
+    model = NumberPlateRecogniser(country)
     # Data collector for number plates
     collector = NumberPlateCollector()
     # Access the camera

@@ -23,10 +23,12 @@ def main():
                               help='Path to output annotated video.')
     parser.add_argument('-d', '--directory_mode', type=bool,
                               help='Whether the input and output are directories')
+    parser.add_argument('-c', '--country', type=str,
+                              help='Country of number plates - either au or ch')
     args = parser.parse_args()
 
     images = get_images(args.input, args.directory_mode)
-    process_image(images, args.output, args.directory_mode)
+    process_image(images, args.output, args.directory_mode, args.country)
 
 
 def get_images(input, directory_mode):
@@ -39,10 +41,11 @@ def get_images(input, directory_mode):
     return [input]
 
 
-def process_image(input_filepaths, output, directory_mode):
+def process_image(input_filepaths, output, directory_mode, country):
+    assert country in ['au', 'ch'], 'country must either be au or ch'
     assert output, 'Must provide an output image path.'
     # Number plate recognition model
-    model = NumberPlateRecogniser(size='n')
+    model = NumberPlateRecogniser(country)
 
     for i, file in enumerate(input_filepaths):
         image = cv2.imread(file)

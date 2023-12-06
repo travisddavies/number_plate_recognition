@@ -18,20 +18,23 @@ def main():
     parser.add_argument('-o', '--output', type=str,
                               help='Path to output annotated video.')
 
+    parser.add_argument('-c', '--country', type=str,
+                              help='Country of number plates - either au or ch')
     args = parser.parse_args()
 
-    process_video(args.input, args.output)
+    process_video(args.input, args.output, args.country)
 
     # Kill the open window
     cv2.waitKey(1000)
     cv2.destroyAllWindows()
 
 
-def process_video(input_filepath, output_filepath):
+def process_video(input_filepath, output_filepath, country):
+    assert country in ['au', 'ch'], 'country must either be au or ch'
     assert input_filepath, 'Must provide an input video path.'
     assert output_filepath, 'Must provide an output video path.'
     # Number plate recognition model
-    model = NumberPlateRecogniser(size='n')
+    model = NumberPlateRecogniser(country)
     # Access the camera
     camera = cv2.VideoCapture(input_filepath)
     width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
