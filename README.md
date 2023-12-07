@@ -37,3 +37,8 @@ For video Recognition:
 ```
 python3 video_recognition.py -c <au or ch> -i <input video> -o <saved video>
 ```
+
+Example:
+```
+python3 video_recognition.py -c ch -i datasets/recognition_datasets/car_videos/IMG_0467.MOV -o result.MOV
+```
