@@ -5,3 +5,4 @@ ultralytics
 numpy
 paddleocr
 paddlepaddle-gpu
+ansible
