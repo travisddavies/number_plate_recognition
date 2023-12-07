@@ -38,7 +38,7 @@ For image recognition:
 python3 image_recognition.py -c <au or ch> -i <input image> -o <saved image>
 ```
 
-For video Recognition:
+For video recognition:
 
 ```
 python3 video_recognition.py -c <au or ch> -i <input video> -o <saved video>
