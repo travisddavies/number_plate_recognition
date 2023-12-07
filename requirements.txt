@@ -1,0 +1,6 @@
+aiohttp
+opencv
+asyncio
+ultralytics
+numpy
+paddleocr
