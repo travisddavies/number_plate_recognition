@@ -3,6 +3,10 @@
 This project aims to accurately detect number plates on cars and extract the
 number plate from an image/video.
 
+<p align="center">
+  <img src="assets/result.gif" alt="Alt Text">
+</p>
+
 ## Note
 Given how domain-specific number plates are for each country/state, number
 plate recognition models were trained individually on two countries, Australia
