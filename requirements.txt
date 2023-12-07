@@ -1,6 +1,7 @@
 aiohttp
-opencv
+opencv-python
 asyncio
 ultralytics
 numpy
 paddleocr
+paddlepaddle-gpu
