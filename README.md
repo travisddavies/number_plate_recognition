@@ -20,10 +20,16 @@ a couchdb database, along with a web interface for checking the logs
 
 ## How to Use
 
-#### Clone the Repo
+#### Clone the Repo and Install Dependencies
 ```
 git clone git@github.com:travisddavies/number_plate_recognition.git
+
+cd number_plate_recognition
+
+pip install -r requirements.txt
 ```
+
+
 #### Run the software
 
 For image recognition:
