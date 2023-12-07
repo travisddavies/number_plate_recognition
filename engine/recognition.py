@@ -258,7 +258,7 @@ class NumberPlateRecogniser:
 
         # Load a font (you may need to adjust the font path)
         font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"
-        font_size = 30
+        font_size = 32
         font = ImageFont.truetype(font_path, font_size)
 
         # Annotate the image with text
