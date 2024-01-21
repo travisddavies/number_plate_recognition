@@ -57,9 +57,8 @@ async def perform_live_mode(country):
 
     # Stop the camera
     camera.release()
-    task = asyncio.create_task(collector.send_to_db())
-    await task
-
+#    task = asyncio.create_task(collector.send_to_db())
+#    await task
 
 if __name__ == "__main__":
     asyncio.run(main())
