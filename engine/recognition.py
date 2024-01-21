@@ -209,33 +209,39 @@ class NumberPlateRecogniser:
 
         # Extract the bboxes and labels from the image
         annotated_image = np.copy(image)
+        annotated_image_pil = Image.fromarray(
+            cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+
+        annotated_image_pil = Image.fromarray(image)
+
+        draw = ImageDraw.Draw(annotated_image_pil)
+
+        # Load a font (you may need to adjust the font path)
+        font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"
+        font_size = 32
+        font = ImageFont.truetype(font_path, font_size)
 
         for bbox, label in zip(bboxes, labels):
             p1 = bbox[0], bbox[1]
             if label:
                 w, h = cv2.getTextSize(label, 0, fontScale=sf, thickness=tf)[0]
+                draw_txt = ImageDraw.Draw(annotated_image_pil)
+                w, h = draw_txt.textsize(label, font=font)
+
                 outside = p1[1] - h >= 3
                 outside = p1[0] + w, p1[1] - h - 3 if outside else p1[1] + h + 3
-                p2 = p1[0] + w, p1[1] - h - 3 if outside else p1[1] + h + 3
+                p2 = p1[0] + w, p1[1] - h + 5 if outside else p1[1] + h + 3
                 p3 = bbox[2], bbox[3]
-
                 # The bbox for the detected license plate
-                annotated_image = cv2.rectangle(annotated_image,
-                                                p1,
-                                                p3,
-                                                colour,
-                                                2)
+                draw.rectangle([p1, p3], outline=colour, width=2)
 
-                # The filled in box where the license plate number will be
-                annotated_image = cv2.rectangle(annotated_image,
-                                                p1,
-                                                p2,
-                                                colour,
-                                                -1,
-                                                cv2.LINE_AA)
+                # The filled-in box where the license plate number will be
+                draw.rectangle([(p1[0], p2[1]), (p2[0], p1[1])], fill=colour)
 
                 # The license plate number annotated on the image
                 text_position = (p1[0], p1[1] - 30 if outside else p1[1] + h + 30)
+                annotated_image = np.array(annotated_image_pil)
+
                 annotated_image = self._add_text(
                     label, annotated_image, text_position,
                     tf, txt_colour, outside)
@@ -245,10 +251,7 @@ class NumberPlateRecogniser:
     def _add_text(self, label, image, text_position, tf, txt_colour, outside):
         # Assuming you have the variables label, p1, outside, h, sf,
         # txt_colour, tf defined
-        # Convert the annotated_image from OpenCV format (BGR) to Pillow format
-        # (RGB)
-        annotated_image = Image.fromarray(
-            cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        annotated_image = Image.fromarray(image)
 
         # Create a Pillow ImageDraw object
         draw = ImageDraw.Draw(annotated_image)
@@ -265,7 +268,6 @@ class NumberPlateRecogniser:
         draw.text(text_position, label, font=font, fill=text_color_pil)
 
         # Convert the Pillow image back to OpenCV format (BGR)
-        annotated_image_cv2 = cv2.cvtColor(
-            np.array(annotated_image), cv2.COLOR_RGB2BGR)
-
-        return annotated_image_cv2
+        annotated_image = np.array(annotated_image)
+#
+        return annotated_image
