@@ -36,8 +36,8 @@ async def perform_live_mode(country):
     # Access the camera
     camera = cv2.VideoCapture(0)
     picam2 = Picamera2()
-    picam2.configure(picam2.create_preview_configuration(
-        main={"format": 'XRGB8888', "size": (640, 480)}))
+    camera_config = picam2.create_preview_configuration()
+    picam2.configure(camera_config)
     picam2.start()
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
