@@ -3,6 +3,7 @@ import cv2
 import asyncio
 from data_collection import NumberPlateCollector
 from argparse import ArgumentParser
+from picamera2 import Picamera2
 
 
 async def main():
@@ -33,11 +34,16 @@ async def perform_live_mode(country):
     # Data collector for number plates
     collector = NumberPlateCollector()
     # Access the camera
-    camera = cv2.VideoCapture('/dev/media0')
+    camera = cv2.VideoCapture(0)
+    picam2 = Picamera2()
+    camera_config = picam2.create_preview_configuration()
+    picam2.configure(camera_config)
+    picam2.start()
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
         # Read the frames of the camera
-        success, frame = camera.read()
+        frame = picam2.capture_array()
+        success = True
         if success:
             # Get the bboxes of the number plates
             bboxes = model.extract_bboxes(frame)
