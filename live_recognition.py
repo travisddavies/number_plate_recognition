@@ -34,10 +34,9 @@ async def perform_live_mode(country):
     # Data collector for number plates
     collector = NumberPlateCollector()
     # Access the camera
-    camera = cv2.VideoCapture(0)
     picam2 = Picamera2()
-    camera_config = picam2.create_preview_configuration()
-    picam2.configure(camera_config)
+    picam2.configure(picam2.create_preview_configuration(
+        main={"format": 'XRGB8888', "size": (640, 480)}))
     picam2.start()
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
@@ -61,8 +60,6 @@ async def perform_live_mode(country):
         if k in {27, ord('q')}:
             break
 
-    # Stop the camera
-    camera.release()
 #    task = asyncio.create_task(collector.send_to_db())
 #    await task
 
