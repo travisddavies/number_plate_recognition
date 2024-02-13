@@ -3,7 +3,6 @@ opencv-python
 asyncio
 ultralytics
 numpy
-paddleocr
-paddlepaddle-gpu
-ansible
-paddleocr>=2.0.1 --upgrade PyMuPDF==1.21.1
+paddlepaddle
+paddleocr>=2.0.1
+PyMuPDF==1.21.1
