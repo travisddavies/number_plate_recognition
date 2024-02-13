@@ -36,25 +36,21 @@ async def perform_live_mode(country):
     # Access the camera
     picam2 = Picamera2()
     picam2.configure(picam2.create_preview_configuration(
-        main={"format": 'XRGB8888', "size": (640, 480)}))
+        main={"format": 'RGB8888', "size": (640, 480)}))
     picam2.start()
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
         # Read the frames of the camera
         frame = picam2.capture_array()
-        success = True
-        if success:
-            # Get the bboxes of the number plates
-            bboxes = model.extract_bboxes(frame)
-            # Get the number plate numbers
-            labels = model.extract_text(frame, bboxes)
-            # Create an annotated version of the frame with the bbox and label
-            annotated_frame = model.annotate_all_in_one(frame, bboxes, labels)
-            # Show the annotated frame to the screen
-            cv2.imshow('Number Plate Recognition', annotated_frame)
-            collector.collect_data(frame, labels, bboxes)
-        else:
-            break
+        # Get the bboxes of the number plates
+        bboxes = model.extract_bboxes(frame)
+        # Get the number plate numbers
+        labels = model.extract_text(frame, bboxes)
+        # Create an annotated version of the frame with the bbox and label
+        annotated_frame = model.annotate_all_in_one(frame, bboxes, labels)
+        # Show the annotated frame to the screen
+        cv2.imshow('Number Plate Recognition', annotated_frame)
+        collector.collect_data(frame, labels, bboxes)
         # Kill the open window
         k = cv2.waitKey(1) & 0xFF
         if k in {27, ord('q')}:
