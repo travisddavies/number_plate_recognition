@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir -r venv/number_plate
-python -m venv venv/number_plate
+python -m --system-site-packages venv venv/number_plate
 source venv/number_plate/bin/activate
 
 pip install --upgrade setuptools
