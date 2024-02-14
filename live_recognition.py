@@ -45,18 +45,10 @@ async def perform_live_mode(pi):
         bboxes = model.extract_bboxes(frame)
         # Get the number plate numbers
         labels = model.extract_text(frame, bboxes, pi)
-        # Create an annotated version of the frame with the bbox and label
-#        annotated_frame = model.annotate_all_in_one(frame, bboxes, labels)
-        # Show the annotated frame to the screen
-#        cv2.imshow('Number Plate Recognition', annotated_frame)
         collector.collect_data(frame, labels, bboxes)
         # Kill the open window
-        # k = cv2.waitKey(1) & 0xFF
-        # if k in {27, ord('q')}:
-            # break
-
-#    task = asyncio.create_task(collector.send_to_db())
-#    await task
+        task = asyncio.create_task(collector.send_to_db())
+        await task
 
 if __name__ == "__main__":
     asyncio.run(main())
