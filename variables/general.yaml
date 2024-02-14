@@ -1,0 +1,1 @@
+directory_path: /home/{{ ansible_user }}/number_plate_recognition

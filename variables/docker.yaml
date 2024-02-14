@@ -1,9 +1,10 @@
 rpm_key_url: https://download.docker.com/linux/ubuntu/gpg
 rpm_key_file: /etc/apt/keyrings/docker.gpg
-repo: deb https://download.docker.com/linux/ubuntu bionic stable
+repo: deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable
 remove_module:
-  - name: docker
-  - name: docker-engine
+  - name: podman-docker
+  - name: docker-doc
+  - name: docker-compose
   - name: docker.io
   - name: containerd
   - name: runc
