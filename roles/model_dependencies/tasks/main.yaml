@@ -1,0 +1,25 @@
+---
+- name: Install apt dependencies
+  apt:
+    pkg:
+      - mupdf
+      - mupdf-tools
+      - libcap-dev
+      - python3-pyqt5
+      - python3-opengl
+
+- name: Manually create the initial virtualenv
+  command:
+    cmd: "python3 -m venv --system-site-packages {{ directory_path }}/venv/number_plate"
+    creates: "{{ directory_path }}/venv/number_plate"
+
+- name: Update setuptools
+  pip:
+    name: setuptools
+    state: latest
+    virtualenv: "{{ directory_path }}/venv/number_plate"
+
+- name: Install requirements
+  pip:
+    requirements: "{{ directory_path }}/pi_requirements.txt"
+    virtualenv: "{{ directory_path }}/venv/number_plate"
