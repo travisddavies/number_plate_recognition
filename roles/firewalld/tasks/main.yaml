@@ -1,0 +1,5 @@
+---
+- name: Make sure firewalld is installed
+  apt:
+    name: firewalld
+    state: present
