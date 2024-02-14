@@ -4,10 +4,15 @@
   vars_files:
     - variables/docker.yaml
     - variables/couchdb.yaml
+    - variables/general.yaml
   gather_facts: yes
   become: yes
   roles:
+    - role: copy_files
     - role: chrony
+      #    - role: model_dependencies
+    - role: firewalld
+    - role: open_ports
     - role: docker
     - role: couchdb
     - role: database
