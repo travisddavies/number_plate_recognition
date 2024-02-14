@@ -17,16 +17,18 @@ def main():
     # Output filepath for the model to write to and annotate
     parser.add_argument('-o', '--output', type=str,
                               help='Path to output annotated video.')
+    parser.add_argument('-p', '--pi', type=bool,
+                        help='Whether or not the device running the program is a raspberry pi')
     args = parser.parse_args()
 
-    process_video(args.input, args.output)
+    process_video(args.input, args.output, args.pi)
 
     # Kill the open window
     cv2.waitKey(1000)
     cv2.destroyAllWindows()
 
 
-def process_video(input_filepath, output_filepath):
+def process_video(input_filepath, output_filepath, pi):
     assert input_filepath, 'Must provide an input video path.'
     assert output_filepath, 'Must provide an output video path.'
     # Number plate recognition model
@@ -48,7 +50,7 @@ def process_video(input_filepath, output_filepath):
             # Get the bboxes of the number plates
             bboxes = model.extract_bboxes(frame)
             # Get the number plate numbers
-            labels = model.extract_text(frame, bboxes)
+            labels = model.extract_text(frame, bboxes, pi)
             # Create an annotated version of the frame with the bbox and label
             annotated_frame = model.annotate_all_in_one(frame, bboxes, labels)
             # Show the annotated frame to the screen
