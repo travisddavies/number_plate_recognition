@@ -1,9 +1,9 @@
 aiohttp
-opencv-python
+opencv-python==4.6.0
 asyncio
-ultralytics
+ultralytics==8.1.12
 numpy
-paddleocr
-paddlepaddle-gpu
+paddlepaddle
 ansible
-paddleocr>=2.0.1 --upgrade PyMuPDF==1.21.1
+paddleocr==2.7.0.3
+PyMuPDF==1.21.1
