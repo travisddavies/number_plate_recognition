@@ -67,7 +67,7 @@ class NumberPlateRecogniser:
 
         return extracted_bboxes
 
-    def extract_text(self, image, bboxes):
+    def extract_text(self, image, bboxes, pi):
         """
         Extracts the text from an image containing number plates.
 
@@ -87,16 +87,29 @@ class NumberPlateRecogniser:
             for prediction in predictions:
                 if not prediction:
                     continue
-
-                for line in prediction:
-                    y1 = line[0][0][1]
-                    y2 = line[0][1][1]
-                    y3 = line[0][2][1]
-                    y4 = line[0][3][1]
+                if pi:
+                    curr_bbox, label_prob = prediction
+                    y1 = curr_bbox[0][1]
+                    y2 = curr_bbox[1][1]
+                    y3 = curr_bbox[2][1]
+                    y4 = curr_bbox[3][1]
                     y_coords = [y1, y2, y3, y4]
                     if self._spreads_over_numplate(cropped_img, y_coords):
-                        good_results.append(line)
-                    ordered_results = sorted(good_results, key=lambda x: x[0][0])
+                        good_results.append(prediction)
+                    ordered_results = sorted(good_results,
+                                             key=lambda x: x[0][0])
+
+                else:
+                    for line in prediction:
+                        y1 = line[0][0][1]
+                        y2 = line[0][1][1]
+                        y3 = line[0][2][1]
+                        y4 = line[0][3][1]
+                        y_coords = [y1, y2, y3, y4]
+                        if self._spreads_over_numplate(cropped_img, y_coords):
+                            good_results.append(line)
+                        ordered_results = sorted(good_results,
+                                                 key=lambda x: x[0][0])
 
                 if self._is_confident_prediction(ordered_results):
                     for label_subtext in ordered_results:
