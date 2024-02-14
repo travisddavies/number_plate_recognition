@@ -1,0 +1,32 @@
+---
+- name: Create number_plate_recognition folder
+  file:
+    path: "{{ directory_path }}"
+    state: directory
+
+- name: Copy engine folder
+  synchronize:
+    src: engine
+    dest: "{{ directory_path }}"
+    delete: yes
+
+- name: Copy live_recognition.py file
+  synchronize:
+    src: live_recognition.py
+    dest: "{{ directory_path }}"
+    delete: yes
+
+- name: Copy fonts folder
+  synchronize:
+    src: fonts
+    dest: "{{ directory_path }}"
+
+- name: Copy data_collection.py file
+  synchronize:
+    src: data_collection.py
+    dest: "{{ directory_path }}"
+
+- name: Copy requirements.txt for pi
+  synchronize:
+    src: pi_requirements.txt
+    dest: "{{ directory_path }}"
