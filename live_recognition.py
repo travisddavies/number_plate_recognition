@@ -2,7 +2,6 @@ from engine.recognition import NumberPlateRecogniser
 import cv2
 import asyncio
 from data_collection import NumberPlateCollector
-from argparse import ArgumentParser
 from picamera2 import Picamera2
 
 
@@ -13,30 +12,23 @@ async def main():
     If a live camera feed is iterated through, an annotated video will be shown
     on the screen, but no video will be saved.
     """
-    # Arguments for the program
-    parser = ArgumentParser(description='Process an image file.')
-    parser.add_argument('-c', '--country', type=str,
-                              help='Country of number plates - either au or ch')
-
-    args = parser.parse_args()
     # If it's live mode, go through a live mode of number plate recognition
-    await perform_live_mode(args.country)
+    await perform_live_mode()
 
     # Kill the open window
     cv2.waitKey(1000)
     cv2.destroyAllWindows()
 
 
-async def perform_live_mode(country):
-    assert country in ['au', 'ch'], 'country must either be au or ch'
+async def perform_live_mode():
     # Number plate recognition model
-    model = NumberPlateRecogniser(country)
+    model = NumberPlateRecogniser()
     # Data collector for number plates
     collector = NumberPlateCollector()
     # Access the camera
     picam2 = Picamera2()
     picam2.configure(picam2.create_preview_configuration(
-        main={"format": 'RGB8888', "size": (640, 480)}))
+        main={"format": 'BGR888'}))
     picam2.start()
     # Start a loop that won't break until the window is quit
     while (cv2.waitKey(1) == -1):
