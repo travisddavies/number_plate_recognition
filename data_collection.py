@@ -8,9 +8,9 @@ class NumberPlateCollector:
     def __init__(self):
         self.username = 'admin'
         self.password = 'password'
-        self.ip_address = '54.252.244.93'
+        self.ip_address = 'localhost'
         self.port_number = '5984'
-        self.db_name = 'number_plate'
+        self.db_name = 'number_plates'
         self.url = f'http://{self.username}:{self.password}@{self.ip_address}:{self.port_number}/{self.db_name}/_bulk_docs'
         self.headers = {'Content-Type': 'application/json'}
         self.times_on_screen = {}
