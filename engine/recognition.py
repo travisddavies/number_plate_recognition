@@ -17,26 +17,19 @@ class NumberPlateRecogniser:
     For initialisation, choose either size='n' or size='s'.
     """
 
-    def __init__(self, country):
+    def __init__(self):
         # Number plate detection model.
         self._detector = YOLO('./engine/best_weights/yolov8n/best.pt')
         # OCR model for number plate text extraction.
         # If Australia was chosen, upload the australian weights,
         # else upload chinese weights.
-        if country == 'au':
-            rec_model_dir = './engine/best_weights/aus_number_plates'
-            self._recogniser = PaddleOCR(use_angle_cls=True,
-                                         detect=True, rec=True,
-                                         rec_model_dir=rec_model_dir,
-                                         show_log=False)
-        else:
-            rec_model_dir = './engine/best_weights/chinese_number_plates/Teacher'
-            rec_char_dict_path = './engine/chinese_number_plate.txt'
-            self._recogniser = PaddleOCR(use_angle_cls=True,
-                                         detect=True, rec=True,
-                                         rec_model_dir=rec_model_dir,
-                                         rec_char_dict_path=rec_char_dict_path,
-                                         show_log=False)
+        rec_model_dir = './engine/best_weights/chinese_number_plates/Teacher'
+        rec_char_dict_path = './engine/chinese_number_plate.txt'
+        self._recogniser = PaddleOCR(use_angle_cls=True,
+                                     detect=True, rec=True,
+                                     rec_model_dir=rec_model_dir,
+                                     rec_char_dict_path=rec_char_dict_path,
+                                     show_log=False)
 
     # Detects the number plate in an image.
     def detect(self, image):
@@ -217,7 +210,7 @@ class NumberPlateRecogniser:
         draw = ImageDraw.Draw(annotated_image_pil)
 
         # Load a font (you may need to adjust the font path)
-        font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"
+        font_path = "/fonts/wqy-zenhei.ttc"
         font_size = 32
         font = ImageFont.truetype(font_path, font_size)
 
@@ -260,7 +253,7 @@ class NumberPlateRecogniser:
         text_color_pil = tuple(reversed(txt_colour))
 
         # Load a font (you may need to adjust the font path)
-        font_path = "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc"
+        font_path = "/fonts/wqy-zenhei.ttc"
         font_size = 32
         font = ImageFont.truetype(font_path, font_size)
 
