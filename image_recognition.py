@@ -23,12 +23,12 @@ def main():
                               help='Path to output annotated video.')
     parser.add_argument('-d', '--directory_mode', type=bool,
                               help='Whether the input and output are directories')
-    parser.add_argument('-c', '--country', type=str,
-                              help='Country of number plates - either au or ch')
+    parser.add_argument('-p', '--pi', type=bool,
+                        help='Whether or not the device running the program is a raspberry pi')
     args = parser.parse_args()
 
     images = get_images(args.input, args.directory_mode)
-    process_image(images, args.output, args.directory_mode, args.country)
+    process_image(images, args.output, args.directory_mode, args.pi)
 
 
 def get_images(input, directory_mode):
@@ -41,18 +41,17 @@ def get_images(input, directory_mode):
     return [input]
 
 
-def process_image(input_filepaths, output, directory_mode, country):
-    assert country in ['au', 'ch'], 'country must either be au or ch'
+def process_image(input_filepaths, output, directory_mode, pi):
     assert output, 'Must provide an output image path.'
     # Number plate recognition model
-    model = NumberPlateRecogniser(country)
+    model = NumberPlateRecogniser()
 
     for i, file in enumerate(input_filepaths):
         image = cv2.imread(file)
         # Get the bboxes of the number plates
         bboxes = model.extract_bboxes(image)
         # Get the number plate numbers
-        labels = model.extract_text(image, bboxes)
+        labels = model.extract_text(image, bboxes, pi)
         # Create an annotated version of the frame with the bbox and label
         annotated_image = model.annotate_all_in_one(image, bboxes, labels)
         # Save the frame to a video
