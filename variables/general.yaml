@@ -3,3 +3,11 @@ virtualenv_path: /home/{{ ansible_user }}/number_plate_recognition/venv/number_p
 services:
   - name: http
   - name: https
+
+deployment_files:
+  - name: engine
+  - name: live_recognition.py
+  - name: fonts
+  - name: data_collection.py
+  - name: pi_requirements.txt
+  - name: run_model.sh
