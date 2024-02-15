@@ -30,3 +30,8 @@
   synchronize:
     src: pi_requirements.txt
     dest: "{{ directory_path }}"
+
+- name: Copy run_model.py
+  synchronize:
+    src: run_model.sh
+    dest: "{{ directory_path }}"
