@@ -3,3 +3,10 @@
     port: 5984-5984/tcp
     permanent: true
     state: enabled
+
+- name: Open http/https ports with firewalld
+  ansible.posix.firewalld:
+    service: "{{ item.name }}"
+    permanent: true
+    state: enabled
+  loop: "{{ services }}"
