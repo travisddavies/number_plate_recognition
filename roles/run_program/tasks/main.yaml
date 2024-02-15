@@ -1,0 +1,3 @@
+---
+  - name: Run Python script
+    shell: "{{ directory_path }}/run_model.sh"
