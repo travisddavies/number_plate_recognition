@@ -1,1 +1,5 @@
 directory_path: /home/{{ ansible_user }}/number_plate_recognition
+virtualenv_path: /home/{{ ansible_user }}/number_plate_recognition/venv/number_plate
+services:
+  - name: http
+  - name: https
