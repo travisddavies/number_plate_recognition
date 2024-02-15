@@ -4,6 +4,7 @@ import asyncio
 from data_collection import NumberPlateCollector
 from picamera2 import Picamera2
 from argparse import ArgumentParser
+from time import time
 
 
 async def main():
@@ -22,12 +23,9 @@ async def main():
     # If it's live mode, go through a live mode of number plate recognition
     await perform_live_mode(args.pi)
 
-    # Kill the open window
-#    cv2.waitKey(1000)
-#    cv2.destroyAllWindows()
-
 
 async def perform_live_mode(pi):
+    start = time()
     # Number plate recognition model
     model = NumberPlateRecogniser()
     # Data collector for number plates
@@ -46,9 +44,13 @@ async def perform_live_mode(pi):
         # Get the number plate numbers
         labels = model.extract_text(frame, bboxes, pi)
         collector.collect_data(frame, labels, bboxes)
-        # Kill the open window
-        task = asyncio.create_task(collector.send_to_db())
-        await task
+        # Send data to the database every minute
+        current = time()
+        if current - start >= 60:
+            start = current
+            task = asyncio.create_task(collector.send_to_db())
+            await task
+
 
 if __name__ == "__main__":
     asyncio.run(main())
