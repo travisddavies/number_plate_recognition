@@ -1,3 +1,7 @@
+user:
+  username: admin
+  password: password
+
 bind_mount_path:
   src: /home/{{ ansible_user }}/data/couchdb/etc
   dst: /opt/couchdb/etc/local.d
@@ -12,9 +16,6 @@ cluster_comm_port_range_min: 9100
 cluster_comm_port_range_max: 9200
 remote_ip_prefix: 0.0.0.0/0
 
-user:
-  username: admin
-  password: password
 default_databases:
   - _users
   - _replicator
