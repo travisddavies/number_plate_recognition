@@ -1,7 +1,0 @@
-train: detection_datasets/international_plates/train
-
-val: detection_datasets/international_plates/val
-
-nc: 1
-
-names: ['number_plate']
