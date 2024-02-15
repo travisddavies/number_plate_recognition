@@ -16,3 +16,4 @@ engine/PaddleOCR/
 engine/__pycache__/
 number_plate_recognition.ipynb
 datasets_all
+__pycache__
