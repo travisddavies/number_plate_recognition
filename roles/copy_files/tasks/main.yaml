@@ -4,34 +4,9 @@
     path: "{{ directory_path }}"
     state: directory
 
-- name: Copy engine folder
+- name: Copy deployment files
   synchronize:
-    src: engine
+    src: "{{ item.name }}"
     dest: "{{ directory_path }}"
     delete: yes
-
-- name: Copy live_recognition.py file
-  synchronize:
-    src: live_recognition.py
-    dest: "{{ directory_path }}"
-    delete: yes
-
-- name: Copy fonts folder
-  synchronize:
-    src: fonts
-    dest: "{{ directory_path }}"
-
-- name: Copy data_collection.py file
-  synchronize:
-    src: data_collection.py
-    dest: "{{ directory_path }}"
-
-- name: Copy requirements.txt for pi
-  synchronize:
-    src: pi_requirements.txt
-    dest: "{{ directory_path }}"
-
-- name: Copy run_model.py
-  synchronize:
-    src: run_model.sh
-    dest: "{{ directory_path }}"
+  loop: "{{ deployment_files }}"
