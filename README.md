@@ -8,15 +8,11 @@ number plate from an image/video.
 </p>
 
 ## Note
-Given how domain-specific number plates are for each country/state, number
-plate recognition models were trained individually on two countries, Australia
-and China. Given the vast amount of training data available online for Chinese
-number plates, this model performs much better than the Australian model. Much
-more data is required to improve the performance of the Australian model.
+This model is specific to Chinese number plates. This model will likely not work
+well on number plates from other countries.
 
 ## In the Works
-- Live recognition on a Raspberry Pi that extracts number plates and sends to
-a couchdb database, along with a web interface for checking the logs
+- Deploying a web interface onto a raspberry pi
 
 ## How to Use
 
@@ -48,3 +44,25 @@ Example:
 ```
 python3 video_recognition.py -c ch -i datasets/recognition_datasets/car_videos/IMG_0467.MOV -o result.MOV
 ```
+
+### Deployment onto Raspberry Pis
+A yaml script has been written to deploy this model onto a **Raspi OS Bookworm** Raspberry Pi.
+This deployment will run a script that will deploy a live recording model that accesses your
+Pi Camera and sends the data of passing number plates to a CouchDB database.
+
+To update the information for your particular Raspberry Pi, change the information in hosts.ini
+to your information. The username to access the database is "admin" and the password is "password".
+
+#### Note:
+A bug exists due a deprecation in the paddleocr code in PaddleOCR/ppocr/postprocess/db_postprocess.py
+at line 188 to 191. To fix this, simply change the "np.int" part of each line to "np.int64" (I know this
+doesn't sound very professional but unfortunately deployment of PaddleOCR on a Raspberry Pi was not easy).
+
+To deploy the model, simple run the following:
+
+```
+ansible-playbook pi_deployment.yaml
+```
+
+This should deploy all dependencies, open ports, deploy the docker containers, set up venvs, etc to run
+the model on a Raspberry Pi.
