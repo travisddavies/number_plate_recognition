@@ -16,4 +16,4 @@
     - role: docker
     - role: couchdb
     - role: database
-    - role: public_keys
+    - role: run_program
