@@ -10,7 +10,7 @@
   roles:
     - role: copy_files
     - role: chrony
-      #    - role: model_dependencies
+    - role: model_dependencies
     - role: firewalld
     - role: open_ports
     - role: docker
